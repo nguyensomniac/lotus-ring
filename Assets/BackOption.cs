@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BackspaceOption : Option
+public class BackOption : Option
 {
 
     override public void Expand()
     {
-        KeyboardState.Instance.Backspace();
+        KeyboardState.Instance.ActivatePreviousKeyboard();
     }
 
     // Use this for initialization

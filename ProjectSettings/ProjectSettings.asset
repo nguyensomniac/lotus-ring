@@ -526,7 +526,7 @@ PlayerSettings:
   metroCertificateNotAfter: 805876015c8cd401
   metroApplicationDescription: idd
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: idd
   metroCommandLineArgsFile: 
   metroTileShowName: 0
   metroMediumTileShowName: 0
@@ -542,7 +542,7 @@ PlayerSettings:
     WindowsStoreApps:
       AllJoyn: False
       BlockedChatMessages: False
-      Bluetooth: False
+      Bluetooth: True
       Chat: False
       CodeGeneration: False
       EnterpriseAuthentication: False

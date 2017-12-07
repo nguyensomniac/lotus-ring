@@ -6,6 +6,10 @@ public class KeyboardState : MonoBehaviour {
 
     private static KeyboardState _instance;
     private string searchString;
+    public AudioClip clip;
+    AudioSource audioSource;
+    private bool isCaps;
+    private bool isKeyboardActivated;
     private Stack<KeyboardScript> history;
     public KeyboardScript activeKeyboard;
     private KeyboardScript initial;
@@ -23,6 +27,7 @@ public class KeyboardState : MonoBehaviour {
         }
         DontDestroyOnLoad(gameObject);
         searchString = "";
+        isCaps = false;
         history = new Stack<KeyboardScript>();
     }
 
@@ -33,21 +38,30 @@ public class KeyboardState : MonoBehaviour {
 
     public void AddToSearch(string s)
     {
-        searchString += s;
-        Debug.Log(searchString);
+        changeSearchString(searchString + s);
+    }
+
+    public void toggleShift()
+    {
+        isCaps = !isCaps;
+    }
+
+    public bool getIsCaps()
+    {
+        return isCaps;
     }
 
     public void Backspace()
     {
         if (searchString.Length > 0)
         {
-            searchString = searchString.Substring(0, searchString.Length - 1);
+            changeSearchString(searchString.Substring(0, searchString.Length - 1));
         }
     }
 
     public void ResetSearch()
     {
-        searchString = "";
+        changeSearchString("");
     }
 
     public KeyboardScript GetActiveKeyboard()
@@ -55,31 +69,57 @@ public class KeyboardState : MonoBehaviour {
         return activeKeyboard;
     }
 
+    void playClickyNoise()
+    {
+        audioSource.PlayOneShot(clip);
+    }
+
     // Key controls
-    void leftSwipe()
+    void leftSwipe(int val)
     {
-        GetActiveKeyboard().leftActivate();
+        if (isKeyboardActivated)
+        {
+            GetActiveKeyboard().leftActivate();
+            playClickyNoise();
+        }
     }
 
-    // @cute boys who code, call me 🔥🔥🔥🔥🔥🔥
-    void rightSwipe()
+    void rightSwipe(int val)
     {
-        GetActiveKeyboard().rightActivate();
+        if (isKeyboardActivated)
+        {
+            GetActiveKeyboard().rightActivate();
+            playClickyNoise();
+        }
     }
 
-    void bottomSwipe()
+    void bottomSwipe(int val)
     {
-        GetActiveKeyboard().bottomActivate();
+        if (isKeyboardActivated)
+        {
+            GetActiveKeyboard().bottomActivate();
+            playClickyNoise();
+        }
+
     }
 
-    void topSwipe()
+    void topSwipe(int val)
     {
-        GetActiveKeyboard().topActivate();
+        if (isKeyboardActivated)
+        {
+            GetActiveKeyboard().topActivate();
+            playClickyNoise();
+        }
     }
 
-    void centerTap()
+    void centerTap(int val)
     {
-        GetActiveKeyboard().centerTap();
+        if (isKeyboardActivated)
+        {
+            GetActiveKeyboard().centerTap();
+            playClickyNoise();
+        }
+
     }
 
     public void ChangeActiveKeyboard(KeyboardScript k)
@@ -95,15 +135,59 @@ public class KeyboardState : MonoBehaviour {
         history.Clear();
     }
 
+    public void DeactivateKeyboard()
+    {
+        ResetActiveKeyboard();
+        activeKeyboard.transitionOut();
+        isKeyboardActivated = false;
+    }
+
+    public void ReactivateKeyboard()
+    {
+        activeKeyboard.transitionIn();
+        isKeyboardActivated = true;
+    }
+
     public void ActivatePreviousKeyboard()
     {
+        if (history.Count == 0)
+        {
+            ResetActiveKeyboard();
+            return;
+        }
         KeyboardScript next = history.Pop();
         ChangeActiveKeyboard(next);
+    }
+
+    void setSearchText()
+    {
+        Component[] components = GetComponentsInChildren<Component>();
+        foreach (Component c in components)
+        {
+            UnityEngine.UI.Text text = c.gameObject.GetComponent<UnityEngine.UI.Text>();
+            if (text && text.CompareTag("Filename"))
+            {
+                text.text = searchString;
+            }
+        }
+    }
+
+    public string getSearchText()
+    {
+        return searchString;
+    }
+
+    void changeSearchString(string newStr)
+    {
+        searchString = newStr;
+        setSearchText();
     }
 
     // Use this for initialization
     void Start () {
         initial = activeKeyboard;
+        audioSource = GetComponent<AudioSource>();
+        isKeyboardActivated = true;
         KeyboardScript[] keyboards = GetComponentsInChildren<KeyboardScript>();
         foreach (KeyboardScript ks in keyboards) {
             ks.transitionOut();

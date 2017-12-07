@@ -19,25 +19,36 @@ public class IntermediateOption : Option
 
     override public void Expand()
     {
-        Debug.Log(parent);
-        KeyboardState.Instance.AddToHistory(parent);
+        KeyboardState.Instance.AddToHistory(getParent());
         KeyboardState.Instance.ChangeActiveKeyboard(child);
+    }
+
+    void SetText(string txt)
+    {
+        Transform t = transform.Find("UITextPrefab").Find("Text");
+        UnityEngine.UI.Text text = t.gameObject.GetComponent<UnityEngine.UI.Text>();
+        if (text)
+        {
+            text.text = txt;
+        }
     }
 
     // Use this for initialization
     void Start()
     {
-        Debug.Log(label);
-        Transform t = transform.Find("UITextPrefab").Find("Text");
-        UnityEngine.UI.Text text = t.gameObject.GetComponent<UnityEngine.UI.Text>();
-        if (text)
-        {
-            text.text = label;
-        }
+        SetText(label);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (KeyboardState.Instance.getIsCaps())
+        {
+            SetText(label.ToUpper());
+        }
+        else
+        {
+            SetText(label);
+        }
     }
 }

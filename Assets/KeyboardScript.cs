@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class KeyboardScript : MonoBehaviour {
     public KeyboardScript next;
-    public Option left;
-    public Option right;
-    public Option top;
-    public Option bottom;
+    Option left;
+    Option right;
+    Option top;
+    Option bottom;
 
 
     public void transitionOut()
@@ -29,43 +29,63 @@ public class KeyboardScript : MonoBehaviour {
 
     public void leftActivate()
     {
-        left.Expand();
+        if (left)
+        {
+            left.Expand();
+        }
     }
 
     public void rightActivate()
     {
-        right.Expand();
+        if (right)
+        {
+            right.Expand();
+        }
     }
 
     public void topActivate()
     {
-        top.Expand();
+        if (top)
+        {
+            top.Expand();
+        }
     }
 
     public void bottomActivate()
     {
-        bottom.Expand();
+        if (bottom)
+        {
+            bottom.Expand();
+        }
     }
 
     // Use this for initialization
-    void Start () {
-        if (left) {
-            left.SetParent(this);
-        }
-        if (right)
+    void Start() {
+        Option[] childOptions;
+        childOptions = gameObject.GetComponentsInChildren<Option>();
+        foreach (Option opt in childOptions)
         {
-            right.SetParent(this);
-            Debug.Log(right.parent);
+            if (opt.CompareTag("Left"))
+            {
+                left = opt;
+                left.SetParent(this);
+            }
+            else if (opt.CompareTag("Right"))
+            {
+                right = opt;
+                right.SetParent(this);
+            }
+            else if (opt.CompareTag("Top"))
+            {
+                top = opt;
+                top.SetParent(this);
+            }
+            else if (opt.CompareTag("Bottom"))
+            {
+                bottom = opt;
+                bottom.SetParent(this);
+            }
         }
-        if (top)
-        {
-            top.SetParent(this);
-        }
-        if (bottom)
-        {
-            bottom.SetParent(this);
-        }
-        Debug.Log(gameObject.transform.localPosition);
         Vector3 pos = new Vector3(-24, -10.2f, 2);
         gameObject.transform.localPosition = pos;
 	}

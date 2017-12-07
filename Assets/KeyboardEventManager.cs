@@ -3,10 +3,16 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
+// Override the abstract UnityEvent<T>
+public class CommandEvent : UnityEvent<int>
+{
+
+}
+
 public class KeyboardEventManager : MonoBehaviour
 {
 
-    private Dictionary<string, UnityEvent> eventDictionary;
+    private Dictionary<string, UnityEvent<int>> eventDictionary;
 
     private static KeyboardEventManager eventManager;
 
@@ -36,41 +42,52 @@ public class KeyboardEventManager : MonoBehaviour
     {
         if (eventDictionary == null)
         {
-            eventDictionary = new Dictionary<string, UnityEvent>();
+            eventDictionary = new Dictionary<string, UnityEvent<int>>();
         }
     }
 
-    public static void StartListening(string eventName, UnityAction listener)
+    // In any code: EventManager.StartListening("party", CALLBACK_NAME);
+    public static void StartListening(string eventName, UnityAction<int> listener)
     {
-        UnityEvent thisEvent = null;
+        UnityEvent<int> thisEvent = null;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent))
         {
             thisEvent.AddListener(listener);
         }
         else
         {
-            thisEvent = new UnityEvent();
+            thisEvent = new CommandEvent();
             thisEvent.AddListener(listener);
             instance.eventDictionary.Add(eventName, thisEvent);
         }
     }
 
-    public static void StopListening(string eventName, UnityAction listener)
+    // In any code: EventManager.StartListening("party", EXISTING_CALLBACK_NAME);
+    public static void StopListening(string eventName, UnityAction<int> listener)
     {
         if (eventManager == null) return;
-        UnityEvent thisEvent = null;
+        UnityEvent<int> thisEvent = null;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent))
         {
             thisEvent.RemoveListener(listener);
         }
     }
 
-    public static void TriggerEvent(string eventName)
+    public static void TriggerEvent(string eventName, int value)
     {
-        UnityEvent thisEvent = null;
+        UnityEvent<int> thisEvent = null;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent))
         {
-            thisEvent.Invoke();
+            thisEvent.Invoke(value);
         }
     }
+
+    //void Update()
+    //{
+    //    EventManager.StartListening("TopSwipe", Callme);
+    //}
+    //void Callme(int val)
+    //{
+    //    Debug.Log(val);
+    //}
 }

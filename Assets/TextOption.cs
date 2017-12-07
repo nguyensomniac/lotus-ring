@@ -18,20 +18,33 @@ public class TextOption : Option
 
     override public void Expand()
     {
-        KeyboardState.Instance.AddToSearch(label);
+        string sentLabel = (KeyboardState.Instance.getIsCaps()) ? label.ToUpper() : label;
+        KeyboardState.Instance.AddToSearch(sentLabel);
     }
 
-    // Use this for initialization
-    void Start () {
+    void SetText(string txt)
+    {
         Transform t = transform.Find("UITextPrefab").Find("Text");
         UnityEngine.UI.Text text = t.gameObject.GetComponent<UnityEngine.UI.Text>();
         if (text)
         {
-            text.text = label;
+            text.text = txt;
         }
+    }
+
+    // Use this for initialization
+    void Start () {
+        SetText(label);
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        if (KeyboardState.Instance.getIsCaps())
+        {
+            SetText(label.ToUpper());
+        } else
+        {
+            SetText(label);
+        }
     }
 }

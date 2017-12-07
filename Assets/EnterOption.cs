@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BackspaceOption : Option
+public class EnterOption : Option
 {
 
     override public void Expand()
     {
-        KeyboardState.Instance.Backspace();
+        KeyboardState.Instance.ResetSearch();
     }
 
     // Use this for initialization
