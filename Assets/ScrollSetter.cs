@@ -24,7 +24,7 @@ public class ScrollSetter : MonoBehaviour {
     {
         pos += (val / scrollScale);
         pos = Mathf.Clamp(pos, 0.0f, 1.0f);
-    }
+x    }
 
     void ScrollDown(int val)
     {
